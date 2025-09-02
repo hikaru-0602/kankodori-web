@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { db } from "../lib/firebase";
-import { doc, getDoc } from "@firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged, getAuth, User } from "firebase/auth";
 
 type FirestoreUserData = Record<string, unknown> | null | undefined;
