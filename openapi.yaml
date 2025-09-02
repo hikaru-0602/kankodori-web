@@ -28,16 +28,16 @@ paths:
                 text:
                   type: string
                   description: 検索テキスト
-                  example: "美しい海岸線"
+                  example: '美しい海岸線'
                 image:
                   type: string
                   format: binary
                   description: 検索画像
               anyOf:
-                - required: ["text"]
-                - required: ["image"]
+                - required: ['text']
+                - required: ['image']
       responses:
-        "200":
+        '200':
           description: 検索結果
           content:
             application/json:
@@ -52,15 +52,15 @@ paths:
                         id:
                           type: string
                           description: 観光地ID
-                          example: "place_001"
+                          example: 'place_001'
                         name:
                           type: string
                           description: 観光地名
-                          example: "美ら海水族館"
+                          example: '美ら海水族館'
                         location:
                           type: string
                           description: 観光地の場所
-                          example: "沖縄県本部町"
+                          example: '沖縄県本部町'
                         text_similarity:
                           type: number
                           format: float
@@ -113,19 +113,19 @@ paths:
                 required:
                   - results
                   - metadata
-        "400":
+        '400':
           description: パラメータエラー
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HTTPException"
+                $ref: '#/components/schemas/HTTPException'
 
   /suggest-images:
     get:
       summary: 画像提案
       description: システム保有画像からランダムに6枚を提案
       responses:
-        "200":
+        '200':
           description: 提案画像リスト
           content:
             application/json:
@@ -141,12 +141,12 @@ paths:
                     maxItems: 6
                     example:
                       [
-                        "images (1).jpg",
-                        "IMG_20241221_200910.jpg",
-                        "IMG_7712.jpeg",
-                        "函館のきれいな海.jpg",
-                        "函館のとてもきれいな景色.jpg",
-                        "55FF9164-B5D7-4000-94F0-D78047B68EB2.jpeg"
+                        'images (1).jpg',
+                        'IMG_20241221_200910.jpg',
+                        'IMG_7712.jpeg',
+                        '函館のきれいな海.jpg',
+                        '函館のとてもきれいな景色.jpg',
+                        '55FF9164-B5D7-4000-94F0-D78047B68EB2.jpeg',
                       ]
                 required:
                   - suggested_images
@@ -159,6 +159,6 @@ components:
         detail:
           type: string
           description: エラーメッセージ
-          example: "text または image のいずれかは必須です"
+          example: 'text または image のいずれかは必須です'
       required:
         - detail

@@ -1,9 +1,9 @@
 // ../lib/firebase.ts
 
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -17,7 +17,6 @@ const firebaseConfig = {
 
 // アプリケーション全体で一度だけFirebaseアプリを初期化する
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-
 
 // getAuthとgetFirestoreを、確実に初期化されたappインスタンスに紐付ける
 export const auth = getAuth(app);

@@ -15,13 +15,16 @@ interface SimilarityWeightSliderProps {
 const WEIGHT_OPTIONS = [10, 30, 50, 70, 90, 100];
 const DEFAULT_VALUE = 50;
 
-export function SimilarityWeightSlider({ onWeightChange, disabled = false }: SimilarityWeightSliderProps) {
+export function SimilarityWeightSlider({
+  onWeightChange,
+  disabled = false,
+}: SimilarityWeightSliderProps) {
   const [textPercentage, setTextPercentage] = useState(DEFAULT_VALUE);
 
   const handleSliderChange = (value: number[]) => {
     const newTextPercentage = value[0];
     setTextPercentage(newTextPercentage);
-    
+
     const weight = createSimilarityWeight(newTextPercentage);
     onWeightChange(weight);
   };
@@ -48,7 +51,7 @@ export function SimilarityWeightSlider({ onWeightChange, disabled = false }: Sim
             <span>画像重視</span>
             <span>テキスト重視</span>
           </div>
-          
+
           <div className="px-2">
             <Slider
               value={[textPercentage]}
@@ -60,9 +63,9 @@ export function SimilarityWeightSlider({ onWeightChange, disabled = false }: Sim
               className="w-full"
             />
           </div>
-          
+
           <div className="flex justify-between text-xs text-muted-foreground">
-            {WEIGHT_OPTIONS.map((value) => (
+            {WEIGHT_OPTIONS.map(value => (
               <span key={value} className="text-center min-w-[2rem]">
                 {value}
               </span>
@@ -72,20 +75,12 @@ export function SimilarityWeightSlider({ onWeightChange, disabled = false }: Sim
 
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-3 bg-secondary rounded-lg">
-            <div className="text-sm font-medium text-secondary-foreground">
-              画像類似度
-            </div>
-            <div className="text-2xl font-bold text-blue-600">
-              {imagePercentage}%
-            </div>
+            <div className="text-sm font-medium text-secondary-foreground">画像類似度</div>
+            <div className="text-2xl font-bold text-blue-600">{imagePercentage}%</div>
           </div>
           <div className="text-center p-3 bg-secondary rounded-lg">
-            <div className="text-sm font-medium text-secondary-foreground">
-              テキスト類似度
-            </div>
-            <div className="text-2xl font-bold text-green-600">
-              {textPercentage}%
-            </div>
+            <div className="text-sm font-medium text-secondary-foreground">テキスト類似度</div>
+            <div className="text-2xl font-bold text-green-600">{textPercentage}%</div>
           </div>
         </div>
 

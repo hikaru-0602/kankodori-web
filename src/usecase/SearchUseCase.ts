@@ -1,4 +1,9 @@
-import type { SearchRequest, SearchResult, SimilarityWeight, SuggestedImage } from '@/domain/types/SearchTypes';
+import type {
+  SearchRequest,
+  SearchResult,
+  SimilarityWeight,
+  SuggestedImage,
+} from '@/domain/types/SearchTypes';
 import type { PlaceWithScore } from '@/domain/entities/Place';
 import { PlaceEntity } from '@/domain/entities/Place';
 
@@ -23,12 +28,12 @@ export class SearchUseCase {
 
   async getSuggestedImages(): Promise<SuggestedImage[]> {
     const images = await this.searchRepository.getSuggestedImages();
-    
+
     // 画像URLを取得して付与
     const imagesWithUrls = await Promise.all(
-      images.map(async (image) => ({
+      images.map(async image => ({
         ...image,
-        url: await this.imageStorageService.getImageUrl('api/query_image', image.filename)
+        url: await this.imageStorageService.getImageUrl('api/query_image', image.filename),
       }))
     );
 
@@ -48,7 +53,7 @@ export class SearchUseCase {
         place.textSimilarity,
         place.imageSimilarity
       );
-      
+
       return placeEntity.calculateCombinedScore(
         similarityWeight.textWeight,
         similarityWeight.imageWeight
@@ -56,16 +61,14 @@ export class SearchUseCase {
     });
 
     // スコア順にソート（降順）
-    return placesWithScores
-      .sort((a, b) => b.combinedScore - a.combinedScore)
-      .slice(0, topCount);
+    return placesWithScores.sort((a, b) => b.combinedScore - a.combinedScore).slice(0, topCount);
   }
 
   async getResultImages(places: PlaceWithScore[]): Promise<PlaceWithScore[]> {
     return await Promise.all(
-      places.map(async (place) => ({
+      places.map(async place => ({
         ...place,
-        imageUrl: await this.imageStorageService.getImageUrl('api/photo', `${place.id}.jpg`)
+        imageUrl: await this.imageStorageService.getImageUrl('api/photo', `${place.id}.jpg`),
       }))
     );
   }

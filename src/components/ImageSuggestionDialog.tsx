@@ -1,7 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Lightbulb, Loader2 } from 'lucide-react';
@@ -12,7 +18,10 @@ interface ImageSuggestionDialogProps {
   getSuggestedImages: () => Promise<SuggestedImage[]>;
 }
 
-export function ImageSuggestionDialog({ onImageSelect, getSuggestedImages }: ImageSuggestionDialogProps) {
+export function ImageSuggestionDialog({
+  onImageSelect,
+  getSuggestedImages,
+}: ImageSuggestionDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [suggestedImages, setSuggestedImages] = useState<SuggestedImage[]>([]);
@@ -22,7 +31,7 @@ export function ImageSuggestionDialog({ onImageSelect, getSuggestedImages }: Ima
     if (!open) {
       setOpen(true);
       setLoading(true);
-      
+
       try {
         const images = await getSuggestedImages();
         setSuggestedImages(images);
@@ -36,7 +45,7 @@ export function ImageSuggestionDialog({ onImageSelect, getSuggestedImages }: Ima
 
   const handleImageSelect = (image: SuggestedImage, index: number) => {
     setSelectedImageIndex(index);
-    
+
     if (image.url) {
       // URLとファイル名を親に渡す（親側でFileオブジェクトに変換）
       console.log('Selected image:', image.filename, image.url);
@@ -62,10 +71,7 @@ export function ImageSuggestionDialog({ onImageSelect, getSuggestedImages }: Ima
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="w-full"
-        >
+        <Button variant="outline" className="w-full">
           <Lightbulb className="mr-2 h-4 w-4" />
           画像を提案
         </Button>
@@ -74,7 +80,7 @@ export function ImageSuggestionDialog({ onImageSelect, getSuggestedImages }: Ima
         <DialogHeader>
           <DialogTitle>画像提案</DialogTitle>
         </DialogHeader>
-        
+
         {loading ? (
           <div className="flex items-center justify-center p-8">
             <Loader2 className="mr-2 h-6 w-6 animate-spin" />
@@ -105,19 +111,15 @@ export function ImageSuggestionDialog({ onImageSelect, getSuggestedImages }: Ima
                   )}
                 </div>
                 <div className="p-2">
-                  <div className="text-xs text-muted-foreground truncate">
-                    {image.filename}
-                  </div>
+                  <div className="text-xs text-muted-foreground truncate">{image.filename}</div>
                 </div>
               </Card>
             ))}
           </div>
         )}
-        
+
         {!loading && suggestedImages.length === 0 && (
-          <div className="text-center p-8 text-muted-foreground">
-            提案できる画像がありません
-          </div>
+          <div className="text-center p-8 text-muted-foreground">提案できる画像がありません</div>
         )}
       </DialogContent>
     </Dialog>

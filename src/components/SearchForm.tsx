@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Loader2 } from "lucide-react";
-import { ImageDropArea } from "./ImageDropArea";
-import { ImageSuggestionDialog } from "./ImageSuggestionDialog";
-import type { SearchRequest, SuggestedImage } from "@/domain/types/SearchTypes";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Search, Loader2 } from 'lucide-react';
+import { ImageDropArea } from './ImageDropArea';
+import { ImageSuggestionDialog } from './ImageSuggestionDialog';
+import type { SearchRequest, SuggestedImage } from '@/domain/types/SearchTypes';
 
 interface SearchFormProps {
   onSearch: (request: SearchRequest) => Promise<void>;
@@ -16,12 +16,8 @@ interface SearchFormProps {
   isLoading: boolean;
 }
 
-export function SearchForm({
-  onSearch,
-  getSuggestedImages,
-  isLoading,
-}: SearchFormProps) {
-  const [searchText, setSearchText] = useState("");
+export function SearchForm({ onSearch, getSuggestedImages, isLoading }: SearchFormProps) {
+  const [searchText, setSearchText] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,28 +40,25 @@ export function SearchForm({
     await onSearch(request);
   };
 
-  const handleSuggestedImageSelect = async (
-    imageUrl: string,
-    filename: string
-  ) => {
+  const handleSuggestedImageSelect = async (imageUrl: string, filename: string) => {
     try {
       // URLから画像を取得してFileオブジェクトを作成
       console.log('Converting suggested image URL to File:', imageUrl);
       const response = await fetch(imageUrl, {
         mode: 'cors',
-        credentials: 'omit'
+        credentials: 'omit',
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const blob = await response.blob();
       const file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
       setSelectedImage(file);
       console.log('Successfully converted to File:', file);
     } catch (error) {
-      console.error("Failed to convert image to File:", error);
+      console.error('Failed to convert image to File:', error);
       alert(`画像の変換に失敗しました: ${error}`);
     }
   };
@@ -86,7 +79,7 @@ export function SearchForm({
               type="text"
               placeholder="例：美しい海岸線"
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={e => setSearchText(e.target.value)}
               disabled={isLoading}
             />
           </div>
@@ -94,10 +87,7 @@ export function SearchForm({
           <div className="space-y-2">
             <Label>検索画像</Label>
             <div className="space-y-3">
-              <ImageDropArea
-                selectedImage={selectedImage}
-                onImageSelect={setSelectedImage}
-              />
+              <ImageDropArea selectedImage={selectedImage} onImageSelect={setSelectedImage} />
               <ImageSuggestionDialog
                 onImageSelect={handleSuggestedImageSelect}
                 getSuggestedImages={getSuggestedImages}
@@ -105,12 +95,7 @@ export function SearchForm({
             </div>
           </div>
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isSubmitDisabled}
-            size="lg"
-          >
+          <Button type="submit" className="w-full" disabled={isSubmitDisabled} size="lg">
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

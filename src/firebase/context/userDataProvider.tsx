@@ -1,14 +1,8 @@
-"use client";
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { db } from "../lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { onAuthStateChanged, getAuth, User } from "firebase/auth";
+'use client';
+import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { db } from '../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
 
 type FirestoreUserData = Record<string, unknown> | null | undefined;
 
@@ -19,30 +13,23 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      async (firebaseUser: User | null) => {
-        if (!firebaseUser) {
-          setUserData(undefined);
-          return;
-        }
-        const ref = doc(db, `users/${firebaseUser.uid}`);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          setUserData(snap.data());
-        } else {
-          setUserData(null);
-        }
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: User | null) => {
+      if (!firebaseUser) {
+        setUserData(undefined);
+        return;
       }
-    );
+      const ref = doc(db, `users/${firebaseUser.uid}`);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        setUserData(snap.data());
+      } else {
+        setUserData(null);
+      }
+    });
     return unsubscribe;
   }, []);
 
-  return (
-    <UserDataContext.Provider value={userData}>
-      {children}
-    </UserDataContext.Provider>
-  );
+  return <UserDataContext.Provider value={userData}>{children}</UserDataContext.Provider>;
 };
 
 export const useUserData = () => useContext(UserDataContext);

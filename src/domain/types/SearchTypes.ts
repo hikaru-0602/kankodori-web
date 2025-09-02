@@ -25,10 +25,10 @@ export interface SimilarityWeight {
 export const createSimilarityWeight = (percentage: number): SimilarityWeight => {
   const textWeight = percentage / 100;
   const imageWeight = 1 - textWeight;
-  
+
   return {
     textWeight,
-    imageWeight
+    imageWeight,
   };
 };
 

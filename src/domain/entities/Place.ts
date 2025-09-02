@@ -20,15 +20,15 @@ export class PlaceEntity implements Place {
   ) {}
 
   calculateCombinedScore(textWeight: number, imageWeight: number): PlaceWithScore {
-    const combinedScore = (this.textSimilarity * textWeight) + (this.imageSimilarity * imageWeight);
-    
+    const combinedScore = this.textSimilarity * textWeight + this.imageSimilarity * imageWeight;
+
     return {
       id: this.id,
       name: this.name,
       location: this.location,
       textSimilarity: this.textSimilarity,
       imageSimilarity: this.imageSimilarity,
-      combinedScore
+      combinedScore,
     };
   }
 }

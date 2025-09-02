@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { MapPin, Star, Image as ImageIcon } from "lucide-react";
-import type { PlaceWithScore } from "@/domain/entities/Place";
+import { useState, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { MapPin, Star, Image as ImageIcon } from 'lucide-react';
+import type { PlaceWithScore } from '@/domain/entities/Place';
 
 interface SearchResultsProps {
   results: PlaceWithScore[];
@@ -18,13 +18,11 @@ interface PlaceWithImageUrl extends PlaceWithScore {
 }
 
 export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
-  const [placesWithImages, setPlacesWithImages] = useState<PlaceWithImageUrl[]>(
-    []
-  );
+  const [placesWithImages, setPlacesWithImages] = useState<PlaceWithImageUrl[]>([]);
 
   useEffect(() => {
     // 初期状態で結果を設定し、画像を非同期で読み込む
-    const initialPlaces: PlaceWithImageUrl[] = results.map((place) => ({
+    const initialPlaces: PlaceWithImageUrl[] = results.map(place => ({
       ...place,
       imageLoading: true,
       imageError: false,
@@ -44,12 +42,12 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
           return { index, error: true };
         }
       })
-    ).then((settledResults) => {
-      setPlacesWithImages((prev) => {
+    ).then(settledResults => {
+      setPlacesWithImages(prev => {
         const updated = [...prev];
         settledResults.forEach((result, index) => {
-          if (result.status === "fulfilled") {
-            if ("imageUrl" in result.value) {
+          if (result.status === 'fulfilled') {
+            if ('imageUrl' in result.value) {
               updated[index] = {
                 ...updated[index],
                 imageUrl: result.value.imageUrl,
@@ -91,10 +89,7 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {placesWithImages.map((place, index) => (
-          <Card
-            key={place.id}
-            className="overflow-hidden hover:shadow-lg transition-shadow"
-          >
+          <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="aspect-video overflow-hidden bg-muted">
               {place.imageLoading ? (
                 <div className="w-full h-full flex items-center justify-center">
@@ -105,11 +100,7 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
                   <ImageIcon className="h-8 w-8 text-muted-foreground" />
                 </div>
               ) : (
-                <img
-                  src={place.imageUrl}
-                  alt={place.name}
-                  className="w-full h-full object-cover"
-                />
+                <img src={place.imageUrl} alt={place.name} className="w-full h-full object-cover" />
               )}
               <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center">
                 <Star className="h-3 w-3 mr-1" />
@@ -119,9 +110,7 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
 
             <CardContent className="p-4">
               <div className="space-y-2">
-                <h3 className="font-semibold text-lg leading-tight">
-                  {place.name}
-                </h3>
+                <h3 className="font-semibold text-lg leading-tight">{place.name}</h3>
 
                 <div className="flex items-center text-sm text-muted-foreground">
                   <MapPin className="h-4 w-4 mr-1" />
@@ -137,9 +126,7 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
                   </div>
                 </div>
 
-                <div className="text-right text-xs text-muted-foreground">
-                  #{index + 1}
-                </div>
+                <div className="text-right text-xs text-muted-foreground">#{index + 1}</div>
               </div>
             </CardContent>
           </Card>

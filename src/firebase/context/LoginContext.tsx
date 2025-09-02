@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type LoginContextType = {
   isLoginTriggered: boolean;
@@ -22,7 +22,7 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
 export const useLoginContext = () => {
   const context = useContext(LoginContext);
   if (!context) {
-    throw new Error("useLoginContext must be used within a LoginProvider");
+    throw new Error('useLoginContext must be used within a LoginProvider');
   }
   return context;
 };

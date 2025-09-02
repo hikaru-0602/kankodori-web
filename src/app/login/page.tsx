@@ -1,36 +1,36 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { login } from "@/firebase/lib/auth";
-import { useAuth } from "@/firebase/context/auth";
-import { Button } from "@/components/ui/button";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { login } from '@/firebase/lib/auth';
+import { useAuth } from '@/firebase/context/auth';
+import { Button } from '@/components/ui/button';
 
 export default function LoginPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
-    console.log("Auth state changed:", { user, authLoading });
+    console.log('Auth state changed:', { user, authLoading });
     if (!authLoading && user) {
-      console.log("User is authenticated, redirecting to home...");
-      router.push("/");
+      console.log('User is authenticated, redirecting to home...');
+      router.push('/');
     }
   }, [user, authLoading, router]);
 
   const handleLogin = async () => {
     try {
-      console.log("Starting login...");
+      console.log('Starting login...');
       const result = await login();
-      console.log("Login result:", result);
+      console.log('Login result:', result);
       if (result && result.user) {
-        console.log("Login successful, waiting for auth state update...");
+        console.log('Login successful, waiting for auth state update...');
         // Auth state will update automatically via onAuthStateChanged
         // The useEffect above will handle the redirect
       }
     } catch (error) {
-      console.error("ログインエラー:", error);
-      alert("ログインに失敗しました。もう一度お試しください。");
+      console.error('ログインエラー:', error);
+      alert('ログインに失敗しました。もう一度お試しください。');
     }
   };
 
@@ -55,9 +55,7 @@ export default function LoginPage() {
             onClick={handleLogin}
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-6 px-12 text-2xl rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
-            <span className="flex items-center justify-center gap-2">
-              ログイン
-            </span>
+            <span className="flex items-center justify-center gap-2">ログイン</span>
           </Button>
         </div>
       </div>

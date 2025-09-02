@@ -27,33 +27,42 @@ export function ImageDropArea({ selectedImage, onImageSelect }: ImageDropAreaPro
     setIsDragOver(false);
   }, []);
 
-  const handleImageSelect = useCallback((file: File) => {
-    onImageSelect(file);
-    
-    // プレビュー用のURLを生成
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-  }, [onImageSelect]);
+  const handleImageSelect = useCallback(
+    (file: File) => {
+      onImageSelect(file);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragOver(false);
+      // プレビュー用のURLを生成
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    },
+    [onImageSelect]
+  );
 
-    const files = Array.from(e.dataTransfer.files);
-    const imageFile = files.find(file => file.type.startsWith('image/'));
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragOver(false);
 
-    if (imageFile) {
-      handleImageSelect(imageFile);
-    }
-  }, [handleImageSelect]);
+      const files = Array.from(e.dataTransfer.files);
+      const imageFile = files.find(file => file.type.startsWith('image/'));
 
-  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      handleImageSelect(file);
-    }
-  }, [handleImageSelect]);
+      if (imageFile) {
+        handleImageSelect(imageFile);
+      }
+    },
+    [handleImageSelect]
+  );
+
+  const handleFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file && file.type.startsWith('image/')) {
+        handleImageSelect(file);
+      }
+    },
+    [handleImageSelect]
+  );
 
   const handleClick = useCallback(() => {
     fileInputRef.current?.click();
@@ -85,7 +94,7 @@ export function ImageDropArea({ selectedImage, onImageSelect }: ImageDropAreaPro
         onChange={handleFileInputChange}
         className="hidden"
       />
-      
+
       {selectedImage && previewUrl ? (
         <Card className="relative p-4">
           <div className="relative">
@@ -103,9 +112,7 @@ export function ImageDropArea({ selectedImage, onImageSelect }: ImageDropAreaPro
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <div className="mt-2 text-sm text-muted-foreground truncate">
-            {selectedImage.name}
-          </div>
+          <div className="mt-2 text-sm text-muted-foreground truncate">{selectedImage.name}</div>
         </Card>
       ) : (
         <Card
