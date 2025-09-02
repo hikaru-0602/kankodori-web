@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { MapPin, Star, Image as ImageIcon } from 'lucide-react';
-import type { PlaceWithScore } from '@/domain/entities/Place';
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Star, Image as ImageIcon } from "lucide-react";
+import type { PlaceWithScore } from "@/domain/entities/Place";
 
 interface SearchResultsProps {
   results: PlaceWithScore[];
@@ -18,16 +18,18 @@ interface PlaceWithImageUrl extends PlaceWithScore {
 }
 
 export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
-  const [placesWithImages, setPlacesWithImages] = useState<PlaceWithImageUrl[]>([]);
+  const [placesWithImages, setPlacesWithImages] = useState<PlaceWithImageUrl[]>(
+    []
+  );
 
   useEffect(() => {
     // 初期状態で結果を設定し、画像を非同期で読み込む
-    const initialPlaces: PlaceWithImageUrl[] = results.map(place => ({
+    const initialPlaces: PlaceWithImageUrl[] = results.map((place) => ({
       ...place,
       imageLoading: true,
-      imageError: false
+      imageError: false,
     }));
-    
+
     setPlacesWithImages(initialPlaces);
 
     // 各結果の画像を非同期で取得
@@ -35,36 +37,37 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
       results.map(async (place, index) => {
         try {
           const imageUrl = await getImageUrl(place.id);
+          console.log(`Loaded image for place ${place.id}: ${imageUrl}`);
           return { index, imageUrl };
         } catch (error) {
           console.error(`Failed to load image for place ${place.id}:`, error);
           return { index, error: true };
         }
       })
-    ).then(settledResults => {
-      setPlacesWithImages(prev => {
+    ).then((settledResults) => {
+      setPlacesWithImages((prev) => {
         const updated = [...prev];
         settledResults.forEach((result, index) => {
-          if (result.status === 'fulfilled') {
-            if ('imageUrl' in result.value) {
+          if (result.status === "fulfilled") {
+            if ("imageUrl" in result.value) {
               updated[index] = {
                 ...updated[index],
                 imageUrl: result.value.imageUrl,
                 imageLoading: false,
-                imageError: false
+                imageError: false,
               };
             } else {
               updated[index] = {
                 ...updated[index],
                 imageLoading: false,
-                imageError: true
+                imageError: true,
               };
             }
           } else {
             updated[index] = {
               ...updated[index],
               imageLoading: false,
-              imageError: true
+              imageError: true,
             };
           }
         });
@@ -88,7 +91,10 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {placesWithImages.map((place, index) => (
-          <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+          <Card
+            key={place.id}
+            className="overflow-hidden hover:shadow-lg transition-shadow"
+          >
             <div className="aspect-video overflow-hidden bg-muted">
               {place.imageLoading ? (
                 <div className="w-full h-full flex items-center justify-center">
@@ -116,7 +122,7 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
                 <h3 className="font-semibold text-lg leading-tight">
                   {place.name}
                 </h3>
-                
+
                 <div className="flex items-center text-sm text-muted-foreground">
                   <MapPin className="h-4 w-4 mr-1" />
                   {place.location}

@@ -26,11 +26,11 @@ export function SimilarityWeightSlider({ onWeightChange, disabled = false }: Sim
     onWeightChange(weight);
   };
 
-  // 初期値を設定
+  // 初期値を設定（一度だけ実行）
   useEffect(() => {
     const initialWeight = createSimilarityWeight(DEFAULT_VALUE);
     onWeightChange(initialWeight);
-  }, [onWeightChange]);
+  }, []); // 依存配列を空にして一度だけ実行
 
   const imagePercentage = 100 - textPercentage;
 

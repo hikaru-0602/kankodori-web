@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useAuth } from '@/firebase/context/auth';
 import { logout } from '@/firebase/lib/auth';
 import { useRouter } from 'next/navigation';
@@ -55,7 +55,7 @@ export default function Home() {
     }
   };
 
-  const handleWeightChange = (weight: SimilarityWeight) => {
+  const handleWeightChange = useCallback((weight: SimilarityWeight) => {
     setSimilarityWeight(weight);
     
     // 検索結果が既にある場合は再計算
@@ -63,7 +63,7 @@ export default function Home() {
       const ranked = searchUseCase.calculateRankedResults(searchResult, weight, 10);
       setRankedResults(ranked);
     }
-  };
+  }, [searchResult, searchUseCase]);
 
   const getSuggestedImages = async () => {
     return await searchUseCase.getSuggestedImages();
