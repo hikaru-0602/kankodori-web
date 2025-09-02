@@ -1,33 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/firebase/context/auth";
 
-interface ProtectedRouteProps {
+interface AuthWrapperProps {
   children: React.ReactNode;
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function AuthWrapper({ children }: AuthWrapperProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
-  const [isChecking, setIsChecking] = useState(true);
+  const pathname = usePathname();
+
+  const isLoginPage = pathname === "/login";
 
   useEffect(() => {
-    console.log("ProtectedRoute - Auth state:", { user, isLoading });
+    console.log("AuthWrapper - Auth state:", { user, isLoading, pathname });
     
     if (!isLoading) {
-      if (!user) {
-        console.log("No user found, redirecting to login...");
+      if (!user && !isLoginPage) {
+        // 未認証でログインページ以外にいる場合 → ログインページへ
+        console.log("Redirecting to login...");
         router.push("/login");
-      } else {
-        console.log("User authenticated, showing protected content");
-        setIsChecking(false);
+      } else if (user && isLoginPage) {
+        // 認証済みでログインページにいる場合 → ホームページへ
+        console.log("Redirecting to home...");
+        router.push("/");
       }
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, isLoginPage, router, pathname]);
 
-  if (isLoading || isChecking) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -41,7 +45,8 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  if (!user) {
+  // 認証状態とページが一致しない場合は何も表示しない（リダイレクト中）
+  if ((!user && !isLoginPage) || (user && isLoginPage)) {
     return null;
   }
 

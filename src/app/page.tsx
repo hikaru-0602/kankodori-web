@@ -3,7 +3,6 @@
 import { useAuth } from "@/firebase/context/auth";
 import { logout } from "@/firebase/lib/auth";
 import { useRouter } from "next/navigation";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function Home() {
   const { user } = useAuth();
@@ -19,7 +18,6 @@ export default function Home() {
   };
 
   return (
-    <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
         <header className="bg-white shadow">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,6 +73,5 @@ export default function Home() {
           </div>
         </main>
       </div>
-    </ProtectedRoute>
   );
 }
