@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
@@ -30,10 +30,6 @@ export function ImageDropArea({ selectedImage, onImageSelect }: ImageDropAreaPro
   const handleImageSelect = useCallback(
     (file: File) => {
       onImageSelect(file);
-
-      // プレビュー用のURLを生成
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
     },
     [onImageSelect]
   );
@@ -70,20 +66,36 @@ export function ImageDropArea({ selectedImage, onImageSelect }: ImageDropAreaPro
 
   const handleRemove = useCallback(() => {
     onImageSelect(null);
-    setPreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   }, [onImageSelect]);
 
-  // 画像が変更されたらクリーンアップ
-  useState(() => {
+  // selectedImageが変更されたらpreviewUrlを更新
+  useEffect(() => {
+    if (selectedImage) {
+      // 以前のプレビューURLをクリーンアップ
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      // 新しいプレビューURLを生成
+      const url = URL.createObjectURL(selectedImage);
+      setPreviewUrl(url);
+    } else {
+      // selectedImageがnullの場合はプレビューURLをクリア
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      setPreviewUrl(null);
+    }
+
+    // クリーンアップ関数
     return () => {
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
     };
-  });
+  }, [selectedImage]); // selectedImageが変更された時に実行
 
   return (
     <div className="w-full">

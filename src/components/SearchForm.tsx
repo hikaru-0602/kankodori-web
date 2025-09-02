@@ -42,12 +42,10 @@ export function SearchForm({ onSearch, getSuggestedImages, isLoading }: SearchFo
 
   const handleSuggestedImageSelect = async (imageUrl: string, filename: string) => {
     try {
-      // URLから画像を取得してFileオブジェクトを作成
+      // プロキシ経由で画像を取得してCORSエラーを回避
       console.log('Converting suggested image URL to File:', imageUrl);
-      const response = await fetch(imageUrl, {
-        mode: 'cors',
-        credentials: 'omit',
-      });
+      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+      const response = await fetch(proxyUrl);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { MapPin, Star, Image as ImageIcon } from 'lucide-react';
 import type { PlaceWithScore } from '@/domain/entities/Place';
 
@@ -80,14 +79,11 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         <h2 className="text-2xl font-bold">検索結果</h2>
-        <Badge variant="secondary" className="text-sm">
-          {results.length}件
-        </Badge>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-1">
         {placesWithImages.map((place, index) => (
           <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="aspect-video overflow-hidden bg-muted">
