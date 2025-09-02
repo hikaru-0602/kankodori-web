@@ -13,10 +13,11 @@ import type { SearchRequest, SuggestedImage } from '@/domain/types/SearchTypes';
 interface SearchFormProps {
   onSearch: (request: SearchRequest) => Promise<void>;
   getSuggestedImages: () => Promise<SuggestedImage[]>;
+  onRefresh?: () => Promise<SuggestedImage[]>;
   isLoading: boolean;
 }
 
-export function SearchForm({ onSearch, getSuggestedImages, isLoading }: SearchFormProps) {
+export function SearchForm({ onSearch, getSuggestedImages, onRefresh, isLoading }: SearchFormProps) {
   const [searchText, setSearchText] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
@@ -89,6 +90,7 @@ export function SearchForm({ onSearch, getSuggestedImages, isLoading }: SearchFo
               <ImageSuggestionDialog
                 onImageSelect={handleSuggestedImageSelect}
                 getSuggestedImages={getSuggestedImages}
+                onRefresh={onRefresh}
               />
             </div>
           </div>

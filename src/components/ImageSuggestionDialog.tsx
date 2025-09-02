@@ -10,17 +10,19 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Lightbulb, Loader2 } from 'lucide-react';
+import { Lightbulb, Loader2, RefreshCw } from 'lucide-react';
 import type { SuggestedImage } from '@/domain/types/SearchTypes';
 
 interface ImageSuggestionDialogProps {
   onImageSelect: (imageUrl: string, filename: string) => void;
   getSuggestedImages: () => Promise<SuggestedImage[]>;
+  onRefresh?: () => Promise<SuggestedImage[]>;
 }
 
 export function ImageSuggestionDialog({
   onImageSelect,
   getSuggestedImages,
+  onRefresh,
 }: ImageSuggestionDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,6 +62,21 @@ export function ImageSuggestionDialog({
     setSelectedImageIndex(null);
   };
 
+  const handleRefresh = async () => {
+    setLoading(true);
+    setSuggestedImages([]);
+    setSelectedImageIndex(null);
+
+    try {
+      const images = onRefresh ? await onRefresh() : await getSuggestedImages();
+      setSuggestedImages(images);
+    } catch (error) {
+      console.error('Failed to refresh suggested images:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleOpenChange = (isOpen: boolean) => {
     if (isOpen) {
       handleOpenDialog();
@@ -78,7 +95,19 @@ export function ImageSuggestionDialog({
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>画像提案</DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle>画像提案</DialogTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={loading}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              再提案
+            </Button>
+          </div>
         </DialogHeader>
 
         {loading ? (

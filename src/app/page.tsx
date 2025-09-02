@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/firebase/context/auth';
 import { logout } from '@/firebase/lib/auth';
 import { useRouter } from 'next/navigation';
@@ -11,7 +11,7 @@ import { SearchResults } from '@/components/SearchResults';
 import { SearchUseCase } from '@/usecase/SearchUseCase';
 import { SearchRepositoryImpl } from '@/infrastructure/SearchRepositoryImpl';
 import { FirebaseImageStorageService } from '@/infrastructure/FirebaseImageStorageService';
-import type { SearchRequest, SearchResult, SimilarityWeight } from '@/domain/types/SearchTypes';
+import type { SearchRequest, SearchResult, SimilarityWeight, SuggestedImage } from '@/domain/types/SearchTypes';
 import type { PlaceWithScore } from '@/domain/entities/Place';
 import { LogOut } from 'lucide-react';
 
@@ -26,6 +26,11 @@ export default function Home() {
     imageWeight: 0.5,
   });
   const [rankedResults, setRankedResults] = useState<PlaceWithScore[]>([]);
+  
+  // 画像提案のキューシステム
+  const [suggestedImagesQueue, setSuggestedImagesQueue] = useState<SuggestedImage[][]>([]);
+  const [currentSuggestedImages, setCurrentSuggestedImages] = useState<SuggestedImage[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
 
   // Use cases and services
   const searchRepository = new SearchRepositoryImpl();
@@ -71,13 +76,89 @@ export default function Home() {
     [searchResult, searchUseCase]
   );
 
-  const getSuggestedImages = async () => {
+  // 画像提案を取得してキューに追加する関数
+  const fetchSuggestedImagesForQueue = async () => {
+    try {
+      const images = await searchUseCase.getSuggestedImages();
+      setSuggestedImagesQueue(prev => [...prev, images]);
+      return images;
+    } catch (error) {
+      console.error('Failed to fetch suggested images:', error);
+      return [];
+    }
+  };
+
+  // キューから次の画像提案を取得する関数
+  const getNextSuggestedImages = (): SuggestedImage[] => {
+    if (suggestedImagesQueue.length === 0) {
+      return [];
+    }
+
+    const nextImages = suggestedImagesQueue[0];
+    setSuggestedImagesQueue(prev => prev.slice(1));
+    
+    // 次のデータを事前取得
+    if (suggestedImagesQueue.length === 1) {
+      fetchSuggestedImagesForQueue();
+    }
+    
+    return nextImages;
+  };
+
+  // ImageSuggestionDialog用の関数（既存のインターフェースを保持）
+  const getSuggestedImages = async (): Promise<SuggestedImage[]> => {
+    // キューに画像がある場合はそれを使用
+    if (currentSuggestedImages.length > 0) {
+      return currentSuggestedImages;
+    }
+
+    // キューが空の場合は直接取得
     return await searchUseCase.getSuggestedImages();
+  };
+
+  // 再提案機能：キューから次の画像を取得
+  const handleRefreshSuggestedImages = async (): Promise<SuggestedImage[]> => {
+    setIsLoadingSuggestions(true);
+    
+    try {
+      const nextImages = getNextSuggestedImages();
+      
+      if (nextImages.length > 0) {
+        setCurrentSuggestedImages(nextImages);
+        return nextImages;
+      } else {
+        // キューが空の場合は直接取得
+        const images = await searchUseCase.getSuggestedImages();
+        setCurrentSuggestedImages(images);
+        return images;
+      }
+    } catch (error) {
+      console.error('Failed to refresh suggested images:', error);
+      return [];
+    } finally {
+      setIsLoadingSuggestions(false);
+    }
   };
 
   const getPlaceImageUrl = async (placeId: string) => {
     return await imageStorageService.getImageUrl('api/photo', `${placeId}.jpg`);
   };
+
+  // ページ読み込み時の初期化処理
+  useEffect(() => {
+    const initializeSuggestedImages = async () => {
+      // 最初の画像提案を取得
+      const firstImages = await fetchSuggestedImagesForQueue();
+      setCurrentSuggestedImages(firstImages);
+      
+      // 2つ目の画像提案も事前取得
+      await fetchSuggestedImagesForQueue();
+    };
+
+    if (user) {
+      initializeSuggestedImages();
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,6 +183,7 @@ export default function Home() {
           <SearchForm
             onSearch={handleSearch}
             getSuggestedImages={getSuggestedImages}
+            onRefresh={handleRefreshSuggestedImages}
             isLoading={isLoading}
           />
 
