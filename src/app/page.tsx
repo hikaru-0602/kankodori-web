@@ -65,7 +65,7 @@ export default function Home() {
                     <h3 className="text-lg font-semibold text-green-900 mb-2">
                       画像検索
                     </h3>
-                    <p className="text-green-700">
+                    <p className="text-blue-700">
                       画像をアップロードして類似の観光地を検索
                     </p>
                   </div>

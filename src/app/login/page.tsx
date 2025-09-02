@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/firebase/lib/auth";
 import { useAuth } from "@/firebase/context/auth";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
 
@@ -21,9 +19,6 @@ export default function LoginPage() {
   }, [user, authLoading, router]);
 
   const handleLogin = async () => {
-    setIsLoading(true);
-    setError(null);
-
     try {
       console.log("Starting login...");
       const result = await login();
@@ -35,8 +30,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("ログインエラー:", error);
-      setError("ログインに失敗しました。もう一度お試しください。");
-      setIsLoading(false);
+      alert("ログインに失敗しました。もう一度お試しください。");
     }
   };
 
