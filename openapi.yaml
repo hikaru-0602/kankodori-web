@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: 観光地検索システム API
+  description: テキストと画像を組み合わせた観光地検索システム
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: 開発環境
+
+paths:
+  /search:
+    post:
+      summary: 観光地検索
+      description: |
+        テキストと画像を組み合わせて観光地を検索します。
+        - text, imageのどちらか一方は必須
+        - 不足している方は自動生成されます
+        - テキスト・画像両方の類似度を計算して返却します
+        - フロントエンド側で類似度の加算・ソートを実行します
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: 検索テキスト
+                  example: "美しい海岸線"
+                image:
+                  type: string
+                  format: binary
+                  description: 検索画像
+              anyOf:
+                - required: ["text"]
+                - required: ["image"]
+      responses:
+        "200":
+          description: 検索結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: 観光地ID
+                          example: "place_001"
+                        name:
+                          type: string
+                          description: 観光地名
+                          example: "美ら海水族館"
+                        location:
+                          type: string
+                          description: 観光地の場所
+                          example: "沖縄県本部町"
+                        text_similarity:
+                          type: number
+                          format: float
+                          description: テキスト類似度スコア (0-1の範囲)
+                          minimum: 0
+                          maximum: 1
+                          example: 0.85
+                        image_similarity:
+                          type: number
+                          format: float
+                          description: 画像類似度スコア (0-1の範囲)
+                          minimum: 0
+                          maximum: 1
+                          example: 0.78
+                      required:
+                        - id
+                        - name
+                        - location
+                        - text_similarity
+                        - image_similarity
+                  metadata:
+                    type: object
+                    description: 検索処理のメタデータ
+                    properties:
+                      actual_text:
+                        type: string
+                        description: 実際に使用された検索テキスト
+                      text_generated:
+                        type: boolean
+                        description: テキストが自動生成されたかどうか
+                      image_generated:
+                        type: boolean
+                        description: 画像が自動生成されたかどうか
+                      has_image:
+                        type: boolean
+                        description: 画像が存在するかどうか
+                      original_text:
+                        type: string
+                        nullable: true
+                        description: 元の入力テキスト
+                      has_original_image:
+                        type: boolean
+                        description: 元の画像が存在するかどうか
+                    required:
+                      - actual_text
+                      - text_generated
+                      - image_generated
+                      - has_image
+                      - has_original_image
+                required:
+                  - results
+                  - metadata
+        "400":
+          description: パラメータエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPException"
+
+  /suggest-images:
+    get:
+      summary: 画像提案
+      description: システム保有画像からランダムに6枚を提案
+      responses:
+        "200":
+          description: 提案画像リスト
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggested_images:
+                    type: array
+                    items:
+                      type: string
+                      description: 画像ファイル名
+                    minItems: 1
+                    maxItems: 6
+                    example:
+                      [
+                        "images (1).jpg",
+                        "IMG_20241221_200910.jpg",
+                        "IMG_7712.jpeg",
+                        "函館のきれいな海.jpg",
+                        "函館のとてもきれいな景色.jpg",
+                        "55FF9164-B5D7-4000-94F0-D78047B68EB2.jpeg"
+                      ]
+                required:
+                  - suggested_images
+
+components:
+  schemas:
+    HTTPException:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: エラーメッセージ
+          example: "text または image のいずれかは必須です"
+      required:
+        - detail
