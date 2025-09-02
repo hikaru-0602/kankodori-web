@@ -19,37 +19,30 @@ export function ImageSuggestionDialog({ onImageSelect, getSuggestedImages }: Ima
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   const handleOpenDialog = async () => {
-    setOpen(true);
-    setLoading(true);
-    
-    try {
-      const images = await getSuggestedImages();
-      setSuggestedImages(images);
-    } catch (error) {
-      console.error('Failed to get suggested images:', error);
-    } finally {
-      setLoading(false);
+    if (!open) {
+      setOpen(true);
+      setLoading(true);
+      
+      try {
+        const images = await getSuggestedImages();
+        setSuggestedImages(images);
+      } catch (error) {
+        console.error('Failed to get suggested images:', error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  const handleImageSelect = async (image: SuggestedImage, index: number) => {
+  const handleImageSelect = (image: SuggestedImage, index: number) => {
     setSelectedImageIndex(index);
     
     if (image.url) {
-      // Firebase StorageのURLから画像をダウンロードしてFileオブジェクトを作成
-      try {
-        const response = await fetch(image.url);
-        const blob = await response.blob();
-        const file = new File([blob], image.filename, { type: blob.type });
-        
-        // Base64 URLまたはObjectURLを作成して親に渡す
-        const objectUrl = URL.createObjectURL(file);
-        onImageSelect(objectUrl, image.filename);
-        setOpen(false);
-        setSelectedImageIndex(null);
-      } catch (error) {
-        console.error('Failed to download image:', error);
-      }
+      // URLとファイル名を親に渡す（親側でFileオブジェクトに変換）
+      console.log('Selected image:', image.filename, image.url);
+      onImageSelect(image.url, image.filename);
+      setOpen(false);
+      setSelectedImageIndex(null);
     }
   };
 
@@ -58,12 +51,19 @@ export function ImageSuggestionDialog({ onImageSelect, getSuggestedImages }: Ima
     setSelectedImageIndex(null);
   };
 
+  const handleOpenChange = (isOpen: boolean) => {
+    if (isOpen) {
+      handleOpenDialog();
+    } else {
+      handleCloseDialog();
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={handleCloseDialog}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          onClick={handleOpenDialog}
           className="w-full"
         >
           <Lightbulb className="mr-2 h-4 w-4" />

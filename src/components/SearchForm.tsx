@@ -50,12 +50,23 @@ export function SearchForm({
   ) => {
     try {
       // URLから画像を取得してFileオブジェクトを作成
-      const response = await fetch(imageUrl);
+      console.log('Converting suggested image URL to File:', imageUrl);
+      const response = await fetch(imageUrl, {
+        mode: 'cors',
+        credentials: 'omit'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const blob = await response.blob();
-      const file = new File([blob], filename, { type: blob.type });
+      const file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
       setSelectedImage(file);
+      console.log('Successfully converted to File:', file);
     } catch (error) {
       console.error("Failed to convert image to File:", error);
+      alert(`画像の変換に失敗しました: ${error}`);
     }
   };
 
