@@ -17,7 +17,12 @@ interface SearchFormProps {
   isLoading: boolean;
 }
 
-export function SearchForm({ onSearch, getSuggestedImages, onRefresh, isLoading }: SearchFormProps) {
+export function SearchForm({
+  onSearch,
+  getSuggestedImages,
+  onRefresh,
+  isLoading,
+}: SearchFormProps) {
   const [searchText, setSearchText] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 

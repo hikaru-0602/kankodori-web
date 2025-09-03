@@ -11,7 +11,12 @@ import { SearchResults } from '@/components/SearchResults';
 import { SearchUseCase } from '@/usecase/SearchUseCase';
 import { SearchRepositoryImpl } from '@/infrastructure/SearchRepositoryImpl';
 import { FirebaseImageStorageService } from '@/infrastructure/FirebaseImageStorageService';
-import type { SearchRequest, SearchResult, SimilarityWeight, SuggestedImage } from '@/domain/types/SearchTypes';
+import type {
+  SearchRequest,
+  SearchResult,
+  SimilarityWeight,
+  SuggestedImage,
+} from '@/domain/types/SearchTypes';
 import type { PlaceWithScore } from '@/domain/entities/Place';
 import { LogOut } from 'lucide-react';
 
@@ -26,7 +31,7 @@ export default function Home() {
     imageWeight: 0.5,
   });
   const [rankedResults, setRankedResults] = useState<PlaceWithScore[]>([]);
-  
+
   // 画像提案のキューシステム
   const [suggestedImagesQueue, setSuggestedImagesQueue] = useState<SuggestedImage[][]>([]);
   const [currentSuggestedImages, setCurrentSuggestedImages] = useState<SuggestedImage[]>([]);
@@ -96,12 +101,12 @@ export default function Home() {
 
     const nextImages = suggestedImagesQueue[0];
     setSuggestedImagesQueue(prev => prev.slice(1));
-    
+
     // 次のデータを事前取得
     if (suggestedImagesQueue.length === 1) {
       fetchSuggestedImagesForQueue();
     }
-    
+
     return nextImages;
   };
 
@@ -119,10 +124,10 @@ export default function Home() {
   // 再提案機能：キューから次の画像を取得
   const handleRefreshSuggestedImages = async (): Promise<SuggestedImage[]> => {
     setIsLoadingSuggestions(true);
-    
+
     try {
       const nextImages = getNextSuggestedImages();
-      
+
       if (nextImages.length > 0) {
         setCurrentSuggestedImages(nextImages);
         return nextImages;
@@ -150,7 +155,7 @@ export default function Home() {
       // 最初の画像提案を取得
       const firstImages = await fetchSuggestedImagesForQueue();
       setCurrentSuggestedImages(firstImages);
-      
+
       // 2つ目の画像提案も事前取得
       await fetchSuggestedImagesForQueue();
     };
