@@ -75,12 +75,6 @@ export function SearchForm({
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Text Search Section */}
           <div className="space-y-2">
-            <Label htmlFor="search-text" className="text-sm font-medium flex items-center gap-2">
-              <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-              </svg>
-              キーワード検索
-            </Label>
             <div className="relative">
               <Input
                 id="search-text"
@@ -98,31 +92,20 @@ export function SearchForm({
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               )}
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">または</span>
-            </div>
-          </div>
-
           {/* Image Search Section */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium flex items-center gap-2">
-              <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              画像で検索
-            </Label>
             <div className="space-y-3">
               <ImageDropArea selectedImage={selectedImage} onImageSelect={setSelectedImage} />
               <ImageSuggestionDialog
@@ -134,9 +117,9 @@ export function SearchForm({
           </div>
 
           {/* Submit Button */}
-          <Button 
-            type="submit" 
-            className="w-full h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-200" 
+          <Button
+            type="submit"
+            className="w-full h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-200"
             disabled={isSubmitDisabled}
           >
             {isLoading ? (
