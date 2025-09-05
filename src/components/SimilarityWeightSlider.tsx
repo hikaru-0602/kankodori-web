@@ -13,6 +13,7 @@ interface SimilarityWeightSliderProps {
 }
 
 const DEFAULT_VALUE = 50;
+const SNAP_VALUES = [0, 25, 50, 75, 100];
 
 export function SimilarityWeightSlider({
   onWeightChange,
@@ -21,15 +22,21 @@ export function SimilarityWeightSlider({
   const [imagePercentage, setImagePercentage] = useState(DEFAULT_VALUE);
 
   const handleSliderChange = (value: number[]) => {
-    const newImagePercentage = value[0];
-    setImagePercentage(newImagePercentage);
+    const rawValue = value[0];
+    // 最も近いスナップ値を見つける
+    const snappedValue = SNAP_VALUES.reduce((prev, curr) =>
+      Math.abs(curr - rawValue) < Math.abs(prev - rawValue) ? curr : prev
+    );
 
-    const textPercentage = 100 - newImagePercentage;
+    setImagePercentage(snappedValue);
+
+    const textPercentage = 100 - snappedValue;
     const weight = createSimilarityWeight(textPercentage);
     onWeightChange(weight);
   };
 
   useEffect(() => {
+    setImagePercentage(DEFAULT_VALUE);
     const textPercentage = 100 - DEFAULT_VALUE;
     const initialWeight = createSimilarityWeight(textPercentage);
     onWeightChange(initialWeight);
@@ -49,10 +56,26 @@ export function SimilarityWeightSlider({
                 onValueChange={handleSliderChange}
                 min={0}
                 max={100}
-                step={20}
+                step={1}
                 disabled={disabled}
                 className="w-full touch-pan-y"
               />
+
+              {/* メモリ線（目盛り） */}
+              <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 pointer-events-none">
+                {SNAP_VALUES.map(value => (
+                  <div
+                    key={value}
+                    className="absolute top-1/2 -translate-y-1/2"
+                    style={{ left: `${value}%` }}
+                  >
+                    <div className="w-px h-3 bg-white" />
+                    <div className="absolute top-4 left-1/2 -translate-x-1/2 text-xs text-muted-foreground/70">
+                      {value}%
+                    </div>
+                  </div>
+                ))}
+              </div>
 
               {/* Visual Indicators */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -66,11 +89,10 @@ export function SimilarityWeightSlider({
                 </div>
               </div>
             </div>
-
             {/* Labels for Mobile */}
-            <div className="flex justify-between px-4 text-xs sm:text-sm">
-              <span className="text-muted-foreground">テキスト{textPercentage}%</span>
-              <span className="text-muted-foreground">画像{imagePercentage}%</span>
+            <div className="flex justify-between px-4 text-sm sm:text-base font-medium mt-8">
+              <span className="text-muted-foreground">テキスト {textPercentage}%</span>
+              <span className="text-muted-foreground">画像 {imagePercentage}%</span>
             </div>
           </div>
         </CardContent>
