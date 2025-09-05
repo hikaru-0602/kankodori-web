@@ -173,7 +173,7 @@ export default function Home() {
           </div>
 
           {/* Search Results Container */}
-          {searchResult && (
+          {(searchResult || isLoading) && (
             <SearchResultsContainer
               searchResult={searchResult}
               searchUseCase={searchUseCase}
