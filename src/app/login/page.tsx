@@ -45,7 +45,7 @@ export default function LoginPage() {
 
       <div className="relative z-10 max-w-md w-full space-y-8 p-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent pb-4">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent pb-4">
             さあ、始めましょう
           </h1>
         </div>

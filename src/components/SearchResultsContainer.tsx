@@ -40,7 +40,7 @@ export function SearchResultsContainer({
       };
       setSimilarityWeight(defaultWeight);
       setResetSlider(prev => !prev);
-      
+
       const ranked = searchUseCase.calculateRankedResults(searchResult, defaultWeight, 10);
       setRankedResults(ranked);
       setHasResults(true);
@@ -54,7 +54,7 @@ export function SearchResultsContainer({
       // 検索結果がある場合は再計算
       if (searchResult && !isLoading) {
         setIsCalculating(true);
-        
+
         // 計算処理に少し遅延を入れてスケルトンUIを表示
         setTimeout(() => {
           const ranked = searchUseCase.calculateRankedResults(searchResult, weight, 10);
@@ -83,12 +83,21 @@ export function SearchResultsContainer({
   const showSlider = hasResults || isLoading;
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-3 sm:space-y-4">
+      {/* Search Results Header */}
+      {showSlider && (
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent flex items-center gap-2">
+            検索結果
+          </h2>
+        </div>
+      )}
+
       {/* Similarity Slider */}
       {showSlider && (
         <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-100">
-          <SimilarityWeightSlider 
-            onWeightChange={handleWeightChange} 
+          <SimilarityWeightSlider
+            onWeightChange={handleWeightChange}
             disabled={isLoading || isCalculating}
             reset={resetSlider}
           />

@@ -47,7 +47,7 @@ export function SimilarityWeightSlider({
   const textPercentage = 100 - imagePercentage;
 
   return (
-    <Card className="w-full border-0 bg-card/50 backdrop-blur overflow-hidden">
+    <Card className="w-full border-0 shadow-none bg-card/50 backdrop-blur overflow-hidden">
       <div className="p-4 sm:p-6">
         <CardContent className="p-0 space-y-6">
           {/* Mobile-Optimized Slider */}

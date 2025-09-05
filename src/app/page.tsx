@@ -10,11 +10,7 @@ import { SearchResultsContainer } from '@/components/SearchResultsContainer';
 import { SearchUseCase } from '@/usecase/SearchUseCase';
 import { SearchRepositoryImpl } from '@/infrastructure/SearchRepositoryImpl';
 import { FirebaseImageStorageService } from '@/infrastructure/FirebaseImageStorageService';
-import type {
-  SearchRequest,
-  SearchResult,
-  SuggestedImage,
-} from '@/domain/types/SearchTypes';
+import type { SearchRequest, SearchResult, SuggestedImage } from '@/domain/types/SearchTypes';
 import { LogOut } from 'lucide-react';
 
 export default function Home() {
@@ -54,7 +50,6 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-
 
   // 画像提案を取得してキューに追加する関数
   const fetchSuggestedImagesForQueue = async () => {
@@ -143,7 +138,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              観光地検索
+              観光地検索システム
             </h1>
             <div className="flex items-center gap-2 sm:gap-4">
               <span className="hidden sm:inline-block text-xs sm:text-sm text-muted-foreground truncate max-w-[150px]"></span>
@@ -180,60 +175,6 @@ export default function Home() {
               getPlaceImageUrl={getPlaceImageUrl}
               isLoading={isLoading}
             />
-          )}
-
-          {/* Welcome Message with Better Mobile Design */}
-          {!searchResult && !isLoading && (
-            <div className="flex min-h-[50vh] items-center justify-center px-4">
-              <div className="text-center space-y-6 animate-in fade-in-0 duration-1000">
-                <div className="space-y-2">
-                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                    観光地を探そう
-                  </h2>
-                  <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto">
-                    テキストや画像で理想の観光スポットを検索できます
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto mt-8">
-                  <div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-muted/50">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <svg
-                        className="h-5 w-5 text-primary"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
-                        />
-                      </svg>
-                    </div>
-                    <span className="text-xs text-muted-foreground">キーワード検索</span>
-                  </div>
-                  <div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-muted/50">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <svg
-                        className="h-5 w-5 text-primary"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-                    <span className="text-xs text-muted-foreground">画像検索</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           )}
         </div>
       </main>

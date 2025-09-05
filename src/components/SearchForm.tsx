@@ -70,7 +70,7 @@ export function SearchForm({
   const isSubmitDisabled = (!searchText.trim() && !selectedImage) || isLoading;
 
   return (
-    <Card className="w-full shadow-lg border-0 bg-card/50 backdrop-blur">
+    <Card className="w-full border-1 bg-card/50 backdrop-blur pt-4 pb-2">
       <CardContent className="p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Text Search Section */}

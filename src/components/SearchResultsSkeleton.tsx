@@ -10,27 +10,35 @@ export function SearchResultsSkeleton() {
         <div className="h-6 bg-muted animate-pulse rounded-full w-12"></div>
       </div>
 
-      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-4">
         {Array.from({ length: 6 }).map((_, index) => (
           <Card key={index} className="overflow-hidden border-0 bg-card/50 backdrop-blur">
-            {/* Image Skeleton */}
-            <div className="relative aspect-[4/3] bg-muted animate-pulse"></div>
-            
-            {/* Content Skeleton */}
-            <div className="p-4 space-y-3">
-              <div className="space-y-2">
-                <div className="h-6 bg-muted animate-pulse rounded-md w-3/4"></div>
-                <div className="h-4 bg-muted animate-pulse rounded-md w-1/2"></div>
+            <div className="flex">
+              {/* Image Skeleton */}
+              <div className="w-32 sm:w-40 h-24 sm:h-32 flex-shrink-0 bg-muted animate-pulse relative">
+                {/* Ranking Badge Skeleton */}
+                <div className="absolute top-1 left-1">
+                  <div className="h-6 w-8 bg-background/80 animate-pulse rounded-full"></div>
+                </div>
               </div>
-              
-              <div className="space-y-2">
-                <div className="h-4 bg-muted animate-pulse rounded-md w-full"></div>
-                <div className="h-4 bg-muted animate-pulse rounded-md w-2/3"></div>
-              </div>
-              
-              <div className="flex justify-between items-center pt-2">
-                <div className="h-5 bg-muted animate-pulse rounded-full w-16"></div>
-                <div className="h-5 bg-muted animate-pulse rounded-full w-20"></div>
+
+              {/* Content Skeleton */}
+              <div className="flex-1 p-3 sm:p-4 space-y-2">
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="h-5 bg-muted animate-pulse rounded-md w-3/4"></div>
+                    </div>
+                    <div className="ml-2 h-6 w-12 bg-muted animate-pulse rounded-full"></div>
+                  </div>
+
+                  <div className="h-4 bg-muted animate-pulse rounded-md w-1/2"></div>
+                </div>
+
+                <div className="flex items-center gap-4 pt-1">
+                  <div className="h-4 bg-muted animate-pulse rounded-md w-16"></div>
+                  <div className="h-4 bg-muted animate-pulse rounded-md w-20"></div>
+                </div>
               </div>
             </div>
           </Card>
