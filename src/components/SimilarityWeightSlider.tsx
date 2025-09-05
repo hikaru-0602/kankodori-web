@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Slider } from '@/components/ui/slider';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3 } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Sparkles, Image as ImageIcon, Type } from 'lucide-react';
 import type { SimilarityWeight } from '@/domain/types/SearchTypes';
 import { createSimilarityWeight } from '@/domain/types/SearchTypes';
 
@@ -12,7 +12,6 @@ interface SimilarityWeightSliderProps {
   disabled?: boolean;
 }
 
-const WEIGHT_OPTIONS = [10, 30, 50, 70, 90, 100];
 const DEFAULT_VALUE = 50;
 
 export function SimilarityWeightSlider({
@@ -29,65 +28,55 @@ export function SimilarityWeightSlider({
     onWeightChange(weight);
   };
 
-  // 初期値を設定（一度だけ実行）
   useEffect(() => {
     const initialWeight = createSimilarityWeight(DEFAULT_VALUE);
     onWeightChange(initialWeight);
-  }, []); // 依存配列を空にして一度だけ実行
+  }, []);
 
   const imagePercentage = 100 - textPercentage;
 
   return (
-    <Card>
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg flex items-center">
-          <BarChart3 className="mr-2 h-5 w-5" />
-          類似度の重み調整
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>画像重視</span>
-            <span>テキスト重視</span>
-          </div>
-
-          <div className="px-2">
-            <Slider
-              value={[textPercentage]}
-              onValueChange={handleSliderChange}
-              min={10}
-              max={100}
-              step={20}
-              disabled={disabled}
-              className="w-full"
-            />
-          </div>
-
-          <div className="flex justify-between text-xs text-muted-foreground">
-            {WEIGHT_OPTIONS.map(value => (
-              <span key={value} className="text-center min-w-[2rem]">
-                {value}
-              </span>
-            ))}
-          </div>
+    <Card className="w-full border-0 bg-card/50 backdrop-blur overflow-hidden">
+      <div className="p-4 sm:p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="text-lg font-semibold">重み調整</h3>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-secondary rounded-lg">
-            <div className="text-sm font-medium text-secondary-foreground">画像類似度</div>
-            <div className="text-2xl font-bold text-blue-600">{imagePercentage}%</div>
-          </div>
-          <div className="text-center p-3 bg-secondary rounded-lg">
-            <div className="text-sm font-medium text-secondary-foreground">テキスト類似度</div>
-            <div className="text-2xl font-bold text-green-600">{textPercentage}%</div>
-          </div>
-        </div>
+        <CardContent className="p-0 space-y-6">
+          {/* Mobile-Optimized Slider */}
+          <div className="space-y-4">
+            <div className="relative px-4">
+              <Slider
+                value={[textPercentage]}
+                onValueChange={handleSliderChange}
+                min={10}
+                max={100}
+                step={20}
+                disabled={disabled}
+                className="w-full touch-pan-y"
+              />
 
-        <div className="text-sm text-muted-foreground text-center">
-          検索結果の類似度スコアを上記の割合で組み合わせて表示します
-        </div>
-      </CardContent>
+              {/* Visual Indicators */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white">
+                  <ImageIcon className="h-4 w-4" />
+                </div>
+              </div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white">
+                  <Type className="h-4 w-4" />
+                </div>
+              </div>
+            </div>
+
+            {/* Labels for Mobile */}
+            <div className="flex justify-between px-4 text-xs sm:text-sm">
+              <span className="text-muted-foreground">画像{imagePercentage}%</span>
+              <span className="text-muted-foreground">テキスト{textPercentage}%</span>
+            </div>
+          </div>
+        </CardContent>
+      </div>
     </Card>
   );
 }

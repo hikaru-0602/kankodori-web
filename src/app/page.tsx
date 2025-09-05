@@ -166,14 +166,20 @@ export default function Home() {
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold">観光地検索システム</h1>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-muted-foreground">{user?.email}</span>
-              <Button onClick={handleLogout} variant="outline" size="sm">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      {/* Responsive Header */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center justify-between">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              観光地検索
+            </h1>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="hidden sm:inline-block text-xs sm:text-sm text-muted-foreground truncate max-w-[150px]"></span>
+              <Button onClick={handleLogout} variant="ghost" size="icon" className="sm:hidden">
+                <LogOut className="h-5 w-5" />
+              </Button>
+              <Button onClick={handleLogout} variant="outline" size="sm" className="hidden sm:flex">
                 <LogOut className="h-4 w-4 mr-2" />
                 ログアウト
               </Button>
@@ -182,37 +188,83 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-8">
-          {/* 検索フォーム */}
-          <SearchForm
-            onSearch={handleSearch}
-            getSuggestedImages={getSuggestedImages}
-            onRefresh={handleRefreshSuggestedImages}
-            isLoading={isLoading}
-          />
+      {/* Main Content with Better Mobile Layout */}
+      <main className="container mx-auto px-4 py-4 sm:py-6 md:py-8">
+        <div className="mx-auto max-w-4xl space-y-6 sm:space-y-8">
+          {/* Search Form Card */}
+          <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
+            <SearchForm
+              onSearch={handleSearch}
+              getSuggestedImages={getSuggestedImages}
+              onRefresh={handleRefreshSuggestedImages}
+              isLoading={isLoading}
+            />
+          </div>
 
-          {/* 類似度調整スライダー（検索結果がある場合のみ表示） */}
+          {/* Similarity Slider - More Prominent on Mobile */}
           {searchResult && (
-            <SimilarityWeightSlider onWeightChange={handleWeightChange} disabled={isLoading} />
+            <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-100">
+              <SimilarityWeightSlider onWeightChange={handleWeightChange} disabled={isLoading} />
+            </div>
           )}
 
-          {/* 検索結果 */}
+          {/* Search Results with Better Mobile Grid */}
           {rankedResults.length > 0 && (
-            <SearchResults results={rankedResults} getImageUrl={getPlaceImageUrl} />
+            <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-200">
+              <SearchResults results={rankedResults} getImageUrl={getPlaceImageUrl} />
+            </div>
           )}
 
-          {/* 初回表示時の案内 */}
+          {/* Welcome Message with Better Mobile Design */}
           {!searchResult && !isLoading && (
-            <div className="text-center py-16">
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-muted-foreground">
-                  テキストまたは画像で観光地を検索
-                </h2>
-                <p className="text-muted-foreground max-w-md mx-auto">
-                  キーワードや画像を使って、お気に入りの観光地を見つけましょう。
-                  どちらか一方の入力で検索可能です。
-                </p>
+            <div className="flex min-h-[50vh] items-center justify-center px-4">
+              <div className="text-center space-y-6 animate-in fade-in-0 duration-1000">
+                <div className="space-y-2">
+                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                    観光地を探そう
+                  </h2>
+                  <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto">
+                    テキストや画像で理想の観光スポットを検索できます
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto mt-8">
+                  <div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-muted/50">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <svg
+                        className="h-5 w-5 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-xs text-muted-foreground">キーワード検索</span>
+                  </div>
+                  <div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-muted/50">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <svg
+                        className="h-5 w-5 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-xs text-muted-foreground">画像検索</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
