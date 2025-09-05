@@ -96,17 +96,13 @@ export function SearchResultsContainer({
       )}
 
       {/* Search Results or Skeleton */}
-      {showSkeleton && (
-        <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-200">
+      <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-200">
+        {showSkeleton ? (
           <SearchResultsSkeleton />
-        </div>
-      )}
-      
-      {showResults && (
-        <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-200">
+        ) : showResults ? (
           <SearchResults results={rankedResults} getImageUrl={getPlaceImageUrl} />
-        </div>
-      )}
+        ) : null}
+      </div>
     </div>
   );
 }
