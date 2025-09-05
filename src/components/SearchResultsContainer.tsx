@@ -25,14 +25,22 @@ export function SearchResultsContainer({
     imageWeight: 0.5,
   });
   const [rankedResults, setRankedResults] = useState<PlaceWithScore[]>([]);
+  const [resetSlider, setResetSlider] = useState(false);
 
   // 初期化時に結果をランキング
   useEffect(() => {
     if (searchResult) {
-      const ranked = searchUseCase.calculateRankedResults(searchResult, similarityWeight, 10);
+      // 検索毎にスライダーを50%にリセット
+      const defaultWeight: SimilarityWeight = {
+        textWeight: 0.5,
+        imageWeight: 0.5,
+      };
+      setSimilarityWeight(defaultWeight);
+      setResetSlider(prev => !prev); // スライダーをリセットするためのフラグを切り替え
+      const ranked = searchUseCase.calculateRankedResults(searchResult, defaultWeight, 10);
       setRankedResults(ranked);
     }
-  }, [searchResult, searchUseCase, similarityWeight]);
+  }, [searchResult, searchUseCase]);
 
   const handleWeightChange = useCallback(
     (weight: SimilarityWeight) => {
@@ -51,7 +59,11 @@ export function SearchResultsContainer({
     <div className="space-y-6 sm:space-y-8">
       {/* Similarity Slider */}
       <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-100">
-        <SimilarityWeightSlider onWeightChange={handleWeightChange} disabled={isLoading} />
+        <SimilarityWeightSlider 
+          onWeightChange={handleWeightChange} 
+          disabled={isLoading}
+          reset={resetSlider}
+        />
       </div>
 
       {/* Search Results */}

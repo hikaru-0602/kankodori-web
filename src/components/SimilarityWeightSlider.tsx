@@ -10,6 +10,7 @@ import { createSimilarityWeight } from '@/domain/types/SearchTypes';
 interface SimilarityWeightSliderProps {
   onWeightChange: (weight: SimilarityWeight) => void;
   disabled?: boolean;
+  reset?: boolean;
 }
 
 const DEFAULT_VALUE = 50;
@@ -18,6 +19,7 @@ const SNAP_VALUES = [0, 25, 50, 75, 100];
 export function SimilarityWeightSlider({
   onWeightChange,
   disabled = false,
+  reset = false,
 }: SimilarityWeightSliderProps) {
   const [imagePercentage, setImagePercentage] = useState(DEFAULT_VALUE);
 
@@ -40,7 +42,7 @@ export function SimilarityWeightSlider({
     const textPercentage = 100 - DEFAULT_VALUE;
     const initialWeight = createSimilarityWeight(textPercentage);
     onWeightChange(initialWeight);
-  }, []);
+  }, [reset]);
 
   const textPercentage = 100 - imagePercentage;
 
