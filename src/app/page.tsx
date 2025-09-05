@@ -1,23 +1,20 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/firebase/context/auth';
 import { logout } from '@/firebase/lib/auth';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { SearchForm } from '@/components/SearchForm';
-import { SimilarityWeightSlider } from '@/components/SimilarityWeightSlider';
-import { SearchResults } from '@/components/SearchResults';
+import { SearchResultsContainer } from '@/components/SearchResultsContainer';
 import { SearchUseCase } from '@/usecase/SearchUseCase';
 import { SearchRepositoryImpl } from '@/infrastructure/SearchRepositoryImpl';
 import { FirebaseImageStorageService } from '@/infrastructure/FirebaseImageStorageService';
 import type {
   SearchRequest,
   SearchResult,
-  SimilarityWeight,
   SuggestedImage,
 } from '@/domain/types/SearchTypes';
-import type { PlaceWithScore } from '@/domain/entities/Place';
 import { LogOut } from 'lucide-react';
 
 export default function Home() {
@@ -26,16 +23,10 @@ export default function Home() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const [similarityWeight, setSimilarityWeight] = useState<SimilarityWeight>({
-    textWeight: 0.5,
-    imageWeight: 0.5,
-  });
-  const [rankedResults, setRankedResults] = useState<PlaceWithScore[]>([]);
 
   // 画像提案のキューシステム
   const [suggestedImagesQueue, setSuggestedImagesQueue] = useState<SuggestedImage[][]>([]);
   const [currentSuggestedImages, setCurrentSuggestedImages] = useState<SuggestedImage[]>([]);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
 
   // Use cases and services
   const searchRepository = new SearchRepositoryImpl();
@@ -56,10 +47,6 @@ export default function Home() {
     try {
       const result = await searchUseCase.search(request);
       setSearchResult(result);
-
-      // 現在の類似度重みで結果をランキング
-      const ranked = searchUseCase.calculateRankedResults(result, similarityWeight, 10);
-      setRankedResults(ranked);
     } catch (error) {
       console.error('検索エラー:', error);
       // エラーハンドリング（必要に応じてトースト通知等を追加）
@@ -68,18 +55,6 @@ export default function Home() {
     }
   };
 
-  const handleWeightChange = useCallback(
-    (weight: SimilarityWeight) => {
-      setSimilarityWeight(weight);
-
-      // 検索結果が既にある場合は再計算
-      if (searchResult) {
-        const ranked = searchUseCase.calculateRankedResults(searchResult, weight, 10);
-        setRankedResults(ranked);
-      }
-    },
-    [searchResult, searchUseCase]
-  );
 
   // 画像提案を取得してキューに追加する関数
   const fetchSuggestedImagesForQueue = async () => {
@@ -123,8 +98,6 @@ export default function Home() {
 
   // 再提案機能：キューから次の画像を取得
   const handleRefreshSuggestedImages = async (): Promise<SuggestedImage[]> => {
-    setIsLoadingSuggestions(true);
-
     try {
       const nextImages = getNextSuggestedImages();
 
@@ -140,8 +113,6 @@ export default function Home() {
     } catch (error) {
       console.error('Failed to refresh suggested images:', error);
       return [];
-    } finally {
-      setIsLoadingSuggestions(false);
     }
   };
 
@@ -201,18 +172,14 @@ export default function Home() {
             />
           </div>
 
-          {/* Similarity Slider - More Prominent on Mobile */}
+          {/* Search Results Container */}
           {searchResult && (
-            <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-100">
-              <SimilarityWeightSlider onWeightChange={handleWeightChange} disabled={isLoading} />
-            </div>
-          )}
-
-          {/* Search Results with Better Mobile Grid */}
-          {rankedResults.length > 0 && (
-            <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-200">
-              <SearchResults results={rankedResults} getImageUrl={getPlaceImageUrl} />
-            </div>
+            <SearchResultsContainer
+              searchResult={searchResult}
+              searchUseCase={searchUseCase}
+              getPlaceImageUrl={getPlaceImageUrl}
+              isLoading={isLoading}
+            />
           )}
 
           {/* Welcome Message with Better Mobile Design */}
