@@ -4,7 +4,7 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
-import { getRemoteConfig } from 'firebase/remote-config';
+import { getRemoteConfig, fetchAndActivate, getValue } from 'firebase/remote-config';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -24,3 +24,27 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const remoteConfig = getRemoteConfig(app);
+
+// RemoteConfigの設定
+remoteConfig.settings.minimumFetchIntervalMillis = 3600000; // 1時間
+remoteConfig.defaultConfig = {
+  api_server_url: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3110',
+};
+
+// APIサーバーURLをRemoteConfigから取得する関数
+export const getApiServerUrl = async (): Promise<string> => {
+  try {
+    await fetchAndActivate(remoteConfig);
+    const url = getValue(remoteConfig, 'api_server_url').asString();
+    if (url) {
+      console.log('Using RemoteConfig API URL:', url);
+      return url;
+    } else {
+      console.log('RemoteConfig value is empty, using fallback');
+      return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3110';
+    }
+  } catch (error) {
+    console.warn('Failed to fetch RemoteConfig, using fallback URL:', error);
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3110';
+  }
+};
