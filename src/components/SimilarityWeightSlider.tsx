@@ -72,9 +72,6 @@ export function SimilarityWeightSlider({
                     style={{ left: `${value}%` }}
                   >
                     <div className="w-px h-3 bg-white" />
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 text-xs text-muted-foreground/70">
-                      {value}%
-                    </div>
                   </div>
                 ))}
               </div>
