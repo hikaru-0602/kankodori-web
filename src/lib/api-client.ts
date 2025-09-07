@@ -9,6 +9,9 @@ const apiClient = createClient<paths>({
 // リクエストごとにユーザーUIDをヘッダーに追加するインターセプター
 apiClient.use({
   async onRequest({ request }) {
+    // ngrokのブラウザ警告をスキップ
+    request.headers.set('ngrok-skip-browser-warning', 'true');
+
     const auth = getAuth();
     const user = auth.currentUser;
 
