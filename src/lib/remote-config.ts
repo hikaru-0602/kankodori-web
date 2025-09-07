@@ -15,6 +15,12 @@ const defaultValues = {
 export async function initializeRemoteConfig() {
   if (isInitialized) return;
 
+  // サーバーサイドでは初期化しない
+  if (typeof window === 'undefined') {
+    console.warn('Remote Config initialization skipped on server side');
+    return;
+  }
+
   try {
     remoteConfig = getRemoteConfigInstance();
 
