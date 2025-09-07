@@ -1,4 +1,4 @@
-import { getApiClient } from '@/lib/api-client';
+import apiClient from '@/lib/api-client';
 import type { SearchRepository } from '@/usecase/SearchUseCase';
 import type { SearchRequest, SearchResult, SuggestedImage } from '@/domain/types/SearchTypes';
 import { PlaceEntity } from '@/domain/entities/Place';
@@ -15,7 +15,6 @@ export class SearchRepositoryImpl implements SearchRepository {
       formData.append('image', request.image);
     }
 
-    const apiClient = await getApiClient();
     const response = await apiClient.POST('/search', {
       body: formData as unknown as { 'multipart/form-data': unknown },
     });
@@ -49,7 +48,6 @@ export class SearchRepositoryImpl implements SearchRepository {
   }
 
   async getSuggestedImages(): Promise<SuggestedImage[]> {
-    const apiClient = await getApiClient();
     const response = await apiClient.GET('/suggest-images');
 
     if (!response.data) {
