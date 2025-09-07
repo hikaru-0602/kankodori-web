@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, X, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
 interface ImageDropAreaProps {
   selectedImage: File | null;

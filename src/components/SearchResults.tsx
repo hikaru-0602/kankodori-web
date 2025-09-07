@@ -78,7 +78,7 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
   return (
     <div className="space-y-2 sm:space-y-3">
       <div className="space-y-2">
-        {placesWithImages.map((place, index) => (
+        {placesWithImages.map(place => (
           <Card
             key={place.id}
             className="group overflow-hidden transition-all duration-300 border-1 bg-card/50 backdrop-blur py-3"

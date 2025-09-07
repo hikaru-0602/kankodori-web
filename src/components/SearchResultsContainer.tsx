@@ -21,7 +21,7 @@ export function SearchResultsContainer({
   getPlaceImageUrl,
   isLoading = false,
 }: SearchResultsContainerProps) {
-  const [similarityWeight, setSimilarityWeight] = useState<SimilarityWeight>({
+  const [, setSimilarityWeight] = useState<SimilarityWeight>({
     textWeight: 0.5,
     imageWeight: 0.5,
   });

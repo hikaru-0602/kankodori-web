@@ -31,7 +31,7 @@ export function ImageSuggestionDialog({
   const handleOpenDialog = async () => {
     if (!open) {
       setOpen(true);
-      
+
       // 既に画像がある場合はローディングを表示しない
       if (suggestedImages.length === 0) {
         setLoading(true);
@@ -56,7 +56,7 @@ export function ImageSuggestionDialog({
       onImageSelect(image.url, image.filename);
       setOpen(false);
       setSelectedImageIndex(null);
-      
+
       // 画像選択後も次の提案画像を事前に取得
       try {
         const images = onRefresh ? await onRefresh() : await getSuggestedImages();
@@ -70,7 +70,7 @@ export function ImageSuggestionDialog({
   const handleCloseDialog = async () => {
     setOpen(false);
     setSelectedImageIndex(null);
-    
+
     // ダイアログを閉じた時に次の提案画像を事前に取得
     try {
       const images = onRefresh ? await onRefresh() : await getSuggestedImages();
