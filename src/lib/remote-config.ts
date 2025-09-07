@@ -57,16 +57,18 @@ export async function initializeRemoteConfig() {
  */
 export function getApiServerUrl(): string {
   if (!isInitialized || !remoteConfig) {
-    console.warn('Remote Config not initialized, using default URL');
+    console.warn('[Remote Config] Not initialized, using default URL:', defaultValues.api_server_url);
     return defaultValues.api_server_url;
   }
 
   try {
     const value = getValue(remoteConfig, 'api_server_url');
     const url = value.asString();
+    console.log('[Remote Config] Retrieved URL:', url);
     return url || defaultValues.api_server_url;
   } catch (error) {
-    console.error('Failed to get API server URL from Remote Config:', error);
+    console.error('[Remote Config] Failed to get API server URL:', error);
+    console.log('[Remote Config] Falling back to default URL:', defaultValues.api_server_url);
     return defaultValues.api_server_url;
   }
 }

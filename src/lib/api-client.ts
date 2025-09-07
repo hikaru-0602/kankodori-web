@@ -10,6 +10,13 @@ let apiClient: ReturnType<typeof createClient<paths>> | null = null;
 async function initializeApiClient() {
   await initializeRemoteConfig();
   const baseUrl = getApiServerUrl();
+  
+  console.log('[API Client] Initializing with baseUrl:', baseUrl);
+  console.log('[API Client] Environment:', {
+    NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    isClient: typeof window !== 'undefined'
+  });
 
   apiClient = createClient<paths>({ baseUrl });
 
