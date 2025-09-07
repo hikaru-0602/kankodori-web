@@ -10,45 +10,35 @@ const defaultValues = {
 };
 
 /**
- * Remote Configを初期化（レンダリング時に毎回更新）
+ * Remote Configを初期化
  */
 export async function initializeRemoteConfig() {
+  if (isInitialized) return;
+
   // サーバーサイドでは初期化しない
   if (typeof window === 'undefined') {
     console.warn('Remote Config initialization skipped on server side');
     return;
   }
 
-  // 初回初期化
-  if (!isInitialized) {
-    try {
-      remoteConfig = getRemoteConfigInstance();
+  try {
+    remoteConfig = getRemoteConfigInstance();
 
-      // デフォルト値を設定
-      remoteConfig.defaultConfig = defaultValues;
+    // デフォルト値を設定
+    remoteConfig.defaultConfig = defaultValues;
 
-      // 開発環境では最小フェッチインターバルを短くする
-      if (process.env.NODE_ENV === 'development') {
-        remoteConfig.settings.minimumFetchIntervalMillis = 0;
-      }
-
-      isInitialized = true;
-      console.log('Remote Config initialized successfully');
-    } catch (error) {
-      console.error('Failed to initialize Remote Config:', error);
-      // エラーの場合はデフォルト値を使用
-      return;
+    // 開発環境では最小フェッチインターバルを短くする
+    if (process.env.NODE_ENV === 'development') {
+      remoteConfig.settings.minimumFetchIntervalMillis = 0;
     }
-  }
 
-  // レンダリング時に毎回更新を試行
-  if (remoteConfig) {
-    try {
-      await fetchAndActivate(remoteConfig);
-      console.log('Remote Config refreshed on render');
-    } catch (error) {
-      console.error('Failed to refresh Remote Config:', error);
-    }
+    // リモート設定を取得してアクティブ化
+    await fetchAndActivate(remoteConfig);
+
+    isInitialized = true;
+  } catch (error) {
+    console.error('Failed to initialize Remote Config:', error);
+    // エラーの場合はデフォルト値を使用
   }
 }
 
@@ -72,7 +62,7 @@ export function getApiServerUrl(): string {
 }
 
 /**
- * Remote Config の値を手動で再取得
+ * Remote Config の値を再取得
  */
 export async function refreshRemoteConfig() {
   if (!remoteConfig) {
@@ -82,7 +72,6 @@ export async function refreshRemoteConfig() {
 
   try {
     await fetchAndActivate(remoteConfig);
-    console.log('Remote Config manually refreshed successfully');
   } catch (error) {
     console.error('Failed to refresh Remote Config:', error);
   }
