@@ -61,7 +61,25 @@ export class SearchUseCase {
     });
 
     // スコア順にソート（降順）
-    return placesWithScores.sort((a, b) => b.combinedScore - a.combinedScore).slice(0, topCount);
+    const sortedPlaces = placesWithScores.sort((a, b) => b.combinedScore - a.combinedScore);
+    
+    // place.nameで重複除去（より高いスコアのものを残す）
+    const uniquePlaces: PlaceWithScore[] = [];
+    const seenNames = new Set<string>();
+    
+    for (const place of sortedPlaces) {
+      if (!seenNames.has(place.name)) {
+        seenNames.add(place.name);
+        uniquePlaces.push(place);
+        
+        // 上位件数に達したら終了
+        if (uniquePlaces.length >= topCount) {
+          break;
+        }
+      }
+    }
+    
+    return uniquePlaces;
   }
 
   async getResultImages(places: PlaceWithScore[]): Promise<PlaceWithScore[]> {

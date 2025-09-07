@@ -9,8 +9,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Lightbulb, Loader2, RefreshCw } from 'lucide-react';
+import { Lightbulb, Loader2, RefreshCw, X } from 'lucide-react';
 import type { SuggestedImage } from '@/domain/types/SearchTypes';
 
 interface ImageSuggestionDialogProps {
@@ -93,20 +92,30 @@ export function ImageSuggestionDialog({
           画像を提案
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>画像提案</DialogTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={loading}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-              再提案
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={loading}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                再提案
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCloseDialog}
+                className="flex items-center"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </DialogHeader>
 
@@ -116,33 +125,30 @@ export function ImageSuggestionDialog({
             画像を取得中...
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
-            {suggestedImages.map((image, index) => (
-              <Card
+          <div className="grid grid-cols-3 gap-4 p-4">
+            {suggestedImages.slice(0, 6).map((image, index) => (
+              <div
                 key={index}
                 className={`
-                  cursor-pointer transition-all hover:shadow-md
+                  cursor-pointer transition-all rounded-lg overflow-hidden
                   ${selectedImageIndex === index ? 'ring-2 ring-primary' : ''}
                 `}
                 onClick={() => handleImageSelect(image, index)}
               >
-                <div className="aspect-square overflow-hidden rounded-lg">
+                <div className="w-20 h-20">
                   {image.url ? (
                     <img
                       src={image.url}
                       alt={image.filename}
-                      className="w-full h-full object-cover"
+                      className="w-20 h-20 object-cover rounded-lg hover:scale-105 transition-transform"
                     />
                   ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <Loader2 className="h-8 w-8 animate-spin" />
+                    <div className="w-20 h-20 bg-muted rounded-lg flex items-center justify-center">
+                      <Loader2 className="h-6 w-6 animate-spin" />
                     </div>
                   )}
                 </div>
-                <div className="p-2">
-                  <div className="text-xs text-muted-foreground truncate">{image.filename}</div>
-                </div>
-              </Card>
+              </div>
             ))}
           </div>
         )}
