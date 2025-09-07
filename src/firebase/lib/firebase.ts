@@ -1,7 +1,7 @@
 // ../lib/firebase.ts
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
@@ -22,3 +22,22 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+// FirestoreからAPIサーバーのURLを取得する関数
+export const getApiServerUrl = async (): Promise<string> => {
+  try {
+    const docRef = doc(db, 'api_server_url', 'url');
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return data.url;
+    } else {
+      console.warn('API server URL document not found, using default');
+      return 'http://localhost:3';
+    }
+  } catch (error) {
+    console.error('Error fetching API server URL:', error);
+    return 'http://localhost:3';
+  }
+};
