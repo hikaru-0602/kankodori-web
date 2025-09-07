@@ -31,20 +31,23 @@ export function ImageSuggestionDialog({
   const handleOpenDialog = async () => {
     if (!open) {
       setOpen(true);
-      setLoading(true);
-
-      try {
-        const images = await getSuggestedImages();
-        setSuggestedImages(images);
-      } catch (error) {
-        console.error('Failed to get suggested images:', error);
-      } finally {
-        setLoading(false);
+      
+      // 既に画像がある場合はローディングを表示しない
+      if (suggestedImages.length === 0) {
+        setLoading(true);
+        try {
+          const images = await getSuggestedImages();
+          setSuggestedImages(images);
+        } catch (error) {
+          console.error('Failed to get suggested images:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     }
   };
 
-  const handleImageSelect = (image: SuggestedImage, index: number) => {
+  const handleImageSelect = async (image: SuggestedImage, index: number) => {
     setSelectedImageIndex(index);
 
     if (image.url) {
@@ -53,12 +56,28 @@ export function ImageSuggestionDialog({
       onImageSelect(image.url, image.filename);
       setOpen(false);
       setSelectedImageIndex(null);
+      
+      // 画像選択後も次の提案画像を事前に取得
+      try {
+        const images = onRefresh ? await onRefresh() : await getSuggestedImages();
+        setSuggestedImages(images);
+      } catch (error) {
+        console.error('Failed to prefetch next suggested images:', error);
+      }
     }
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = async () => {
     setOpen(false);
     setSelectedImageIndex(null);
+    
+    // ダイアログを閉じた時に次の提案画像を事前に取得
+    try {
+      const images = onRefresh ? await onRefresh() : await getSuggestedImages();
+      setSuggestedImages(images);
+    } catch (error) {
+      console.error('Failed to prefetch next suggested images:', error);
+    }
   };
 
   const handleRefresh = async () => {
