@@ -1,7 +1,7 @@
-import { fetchAndActivate, getValue, type RemoteConfig } from 'firebase/remote-config';
-import { getRemoteConfigInstance } from '@/firebase/lib/remoteConfig';
+import { getRemoteConfig, fetchAndActivate, getValue } from 'firebase/remote-config';
+import { app } from '@/firebase/lib/firebase';
 
-let remoteConfig: RemoteConfig | null = null;
+let remoteConfig: ReturnType<typeof getRemoteConfig> | null = null;
 let isInitialized = false;
 
 // デフォルト値を設定
@@ -16,7 +16,7 @@ export async function initializeRemoteConfig() {
   if (isInitialized) return;
 
   try {
-    remoteConfig = getRemoteConfigInstance();
+    remoteConfig = getRemoteConfig(app);
 
     // デフォルト値を設定
     remoteConfig.defaultConfig = defaultValues;
