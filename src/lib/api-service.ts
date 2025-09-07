@@ -1,8 +1,7 @@
-import { getApiClient } from './api-client';
+import apiClient from './api-client';
 
 export const searchService = {
   async searchPlaces(params: { text?: string; image?: File }) {
-    const apiClient = await getApiClient();
     const formData = new FormData();
 
     if (params.text) {
@@ -25,7 +24,6 @@ export const searchService = {
   },
 
   async getSuggestedImages() {
-    const apiClient = await getApiClient();
     const { data, error } = await apiClient.GET('/suggest-images');
 
     if (error) {
