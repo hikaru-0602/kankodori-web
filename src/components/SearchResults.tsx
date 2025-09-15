@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { ImageIcon } from 'lucide-react';
 import type { PlaceWithScore } from '@/domain/entities/Place';
@@ -18,6 +18,15 @@ interface PlaceWithImageUrl extends PlaceWithScore {
 
 export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
   const [placesWithImages, setPlacesWithImages] = useState<PlaceWithImageUrl[]>([]);
+
+  // Calculate average text similarity for top 10 results
+  const averageTextSimilarity = useMemo(() => {
+    const top10 = results.slice(0, 10);
+    if (top10.length === 0) return 0;
+
+    const sum = top10.reduce((acc, place) => acc + place.textSimilarity, 0);
+    return sum / top10.length;
+  }, [results]);
 
   useEffect(() => {
     const initialPlaces: PlaceWithImageUrl[] = results.map(place => ({
@@ -77,6 +86,16 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
 
   return (
     <div className="space-y-2 sm:space-y-3">
+      {/* Display average text similarity */}
+      <div className="flex items-center justify-between px-4 py-2 bg-muted/30 rounded-lg border">
+        <span className="text-sm font-medium text-muted-foreground">
+          上位10件の平均テキスト類似度
+        </span>
+        <span className="text-sm font-bold text-primary">
+          {(averageTextSimilarity * 100).toFixed(1)}%
+        </span>
+      </div>
+
       <div className="space-y-2">
         {placesWithImages.map(place => (
           <Card
@@ -121,6 +140,8 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
                 {/* Scores */}
                 <div className="flex items-center gap-4 text-xs pt-1">
                   <span>類似度{(place.combinedScore * 100).toFixed(0)}%</span>
+                  <span>テキスト{(place.textSimilarity * 100).toFixed(0)}%</span>
+                  <span>画像{(place.imageSimilarity * 100).toFixed(0)}%</span>
                 </div>
               </div>
             </div>
