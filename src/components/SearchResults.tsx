@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { ImageIcon } from 'lucide-react';
 import type { PlaceWithScore } from '@/domain/entities/Place';
+import { SimilarityReport } from '@/components/SimilarityReport';
 
 export interface SearchResultsProps {
   results: PlaceWithScore[];
@@ -148,6 +149,9 @@ export function SearchResults({ results, getImageUrl }: SearchResultsProps) {
           </Card>
         ))}
       </div>
+
+      {/* Similarity Report */}
+      <SimilarityReport results={results} />
     </div>
   );
 }
