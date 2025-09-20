@@ -11,7 +11,7 @@ import { SearchUseCase } from '@/usecase/SearchUseCase';
 import { SearchRepositoryImpl } from '@/infrastructure/SearchRepositoryImpl';
 import { FirebaseImageStorageService } from '@/infrastructure/FirebaseImageStorageService';
 import type { SearchRequest, SearchResult, SuggestedImage } from '@/domain/types/SearchTypes';
-import { LogOut, FileText, Image } from 'lucide-react';
+import { LogOut, FileText, Image, Grid3X3 } from 'lucide-react';
 
 export default function Home() {
   const { user } = useAuth();
@@ -149,6 +149,10 @@ export default function Home() {
               <Button onClick={() => router.push('/image-batch-report')} variant="outline" size="sm" className="hidden sm:flex">
                 <Image className="h-4 w-4 mr-2" />
                 画像バッチ
+              </Button>
+              <Button onClick={() => router.push('/cross-search')} variant="outline" size="sm" className="hidden sm:flex">
+                <Grid3X3 className="h-4 w-4 mr-2" />
+                総当たり
               </Button>
               <Button onClick={handleLogout} variant="ghost" size="icon" className="sm:hidden">
                 <LogOut className="h-5 w-5" />
