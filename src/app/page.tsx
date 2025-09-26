@@ -11,7 +11,7 @@ import { SearchUseCase } from '@/usecase/SearchUseCase';
 import { SearchRepositoryImpl } from '@/infrastructure/SearchRepositoryImpl';
 import { FirebaseImageStorageService } from '@/infrastructure/FirebaseImageStorageService';
 import type { SearchRequest, SearchResult, SuggestedImage } from '@/domain/types/SearchTypes';
-import { LogOut, FileText, Image, Grid3X3 } from 'lucide-react';
+import { LogOut, FileText, Image, Grid3X3, ClipboardCheck } from 'lucide-react';
 
 export default function Home() {
   const { user } = useAuth();
@@ -153,6 +153,10 @@ export default function Home() {
               <Button onClick={() => router.push('/cross-search')} variant="outline" size="sm" className="hidden sm:flex">
                 <Grid3X3 className="h-4 w-4 mr-2" />
                 総当たり
+              </Button>
+              <Button onClick={() => router.push('/evaluation')} variant="outline" size="sm" className="hidden sm:flex">
+                <ClipboardCheck className="h-4 w-4 mr-2" />
+                評価
               </Button>
               <Button onClick={handleLogout} variant="ghost" size="icon" className="sm:hidden">
                 <LogOut className="h-5 w-5" />
