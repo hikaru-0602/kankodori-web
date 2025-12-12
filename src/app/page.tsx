@@ -11,7 +11,7 @@ import { SearchUseCase } from '@/usecase/SearchUseCase';
 import { SearchRepositoryImpl } from '@/infrastructure/SearchRepositoryImpl';
 import { FirebaseImageStorageService } from '@/infrastructure/FirebaseImageStorageService';
 import type { SearchRequest, SearchResult, SuggestedImage } from '@/domain/types/SearchTypes';
-import { LogOut } from 'lucide-react';
+import { LogOut, FileText, Image, Grid3X3, ClipboardCheck } from 'lucide-react';
 
 export default function Home() {
   const { user } = useAuth();
@@ -142,6 +142,22 @@ export default function Home() {
             </h1>
             <div className="flex items-center gap-2 sm:gap-4">
               <span className="hidden sm:inline-block text-xs sm:text-sm text-muted-foreground truncate max-w-[150px]"></span>
+              <Button onClick={() => router.push('/batch-report')} variant="outline" size="sm" className="hidden sm:flex">
+                <FileText className="h-4 w-4 mr-2" />
+                バッチレポート
+              </Button>
+              <Button onClick={() => router.push('/image-batch-report')} variant="outline" size="sm" className="hidden sm:flex">
+                <Image className="h-4 w-4 mr-2" />
+                画像バッチ
+              </Button>
+              <Button onClick={() => router.push('/cross-search')} variant="outline" size="sm" className="hidden sm:flex">
+                <Grid3X3 className="h-4 w-4 mr-2" />
+                総当たり
+              </Button>
+              <Button onClick={() => router.push('/evaluation')} variant="outline" size="sm" className="hidden sm:flex">
+                <ClipboardCheck className="h-4 w-4 mr-2" />
+                評価
+              </Button>
               <Button onClick={handleLogout} variant="ghost" size="icon" className="sm:hidden">
                 <LogOut className="h-5 w-5" />
               </Button>
