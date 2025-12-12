@@ -146,6 +146,17 @@ export default function CrossSearchPage() {
     return ((filteredCount / totalCount) * 100).toFixed(1);
   };
 
+  // 各ユニーク数の件数を集計
+  const getUniqueCountDistribution = () => {
+    const distribution: { [key: number]: number } = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    allResults.forEach(result => {
+      if (result.uniqueCount >= 1 && result.uniqueCount <= 5) {
+        distribution[result.uniqueCount]++;
+      }
+    });
+    return distribution;
+  };
+
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <h1 className="text-2xl font-bold mb-6">総当たり検索</h1>
@@ -189,7 +200,7 @@ export default function CrossSearchPage() {
         </CardContent>
       </Card>
 
-      {filteredResults.length > 0 && (
+      {allResults.length > 0 && (
         <>
           <Card className="mb-4">
             <CardContent className="pt-6">
@@ -202,13 +213,38 @@ export default function CrossSearchPage() {
                   {getPercentage()}% が3種類以上の異なる結果を持っています
                 </p>
               </div>
+
+              {/* 各種類の件数表示 */}
+              <div className="mt-4 pt-4 border-t">
+                <p className="text-sm font-semibold mb-2 text-center">結果の分布</p>
+                <div className="grid grid-cols-5 gap-2">
+                  {[1, 2, 3, 4, 5].map(count => {
+                    const distribution = getUniqueCountDistribution();
+                    const isHighlighted = count >= 3;
+                    return (
+                      <div
+                        key={count}
+                        className={`text-center p-2 rounded ${
+                          isHighlighted ? 'bg-primary/10 border border-primary/20' : 'bg-secondary'
+                        }`}
+                      >
+                        <p className="text-xs text-muted-foreground">{count}種類</p>
+                        <p className={`font-bold ${isHighlighted ? 'text-primary' : ''}`}>
+                          {distribution[count]}件
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>検索結果（3種類以上の結果を持つもののみ）</CardTitle>
-            </CardHeader>
+          {filteredResults.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>検索結果（3種類以上の結果を持つもののみ）</CardTitle>
+              </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {filteredResults.map((result, index) => (
@@ -271,6 +307,7 @@ export default function CrossSearchPage() {
               </div>
             </CardContent>
           </Card>
+          )}
         </>
       )}
 
