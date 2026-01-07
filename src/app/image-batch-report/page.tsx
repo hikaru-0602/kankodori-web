@@ -13,7 +13,7 @@ import type { SearchRequest } from '@/domain/types/SearchTypes';
 interface ImageBatchSearchResult {
   imageUrl: string;
   average: number;
-  range: number;
+  variance: number;
   max: number;
   min: number;
 }
@@ -72,10 +72,22 @@ export default function ImageBatchReportPage() {
             imageSimilarities.reduce((sum: number, val: number) => sum + val, 0) /
             imageSimilarities.length;
 
+          // 上位10件の分散を計算
+          const top10 = imageSimilarities.slice(0, 10);
+          const top10Average =
+            top10.reduce((sum: number, val: number) => sum + val, 0) / top10.length;
+          const variance =
+            top10.length > 0
+              ? top10.reduce(
+                  (sum: number, val: number) => sum + Math.pow(val - top10Average, 2),
+                  0
+                ) / top10.length
+              : 0;
+
           tempResults.push({
             imageUrl: imageUrl.length > 50 ? imageUrl.substring(0, 50) + '...' : imageUrl,
             average,
-            range: max - min,
+            variance,
             max,
             min,
           });
@@ -150,8 +162,8 @@ export default function ImageBatchReportPage() {
                       <span className="font-semibold">{(result.average * 100).toFixed(2)}%</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">範囲 (最大-最小):</span>{' '}
-                      <span className="font-semibold">{(result.range * 100).toFixed(2)}%</span>
+                      <span className="text-muted-foreground">上位10件の分散:</span>{' '}
+                      <span className="font-semibold">{(result.variance * 10000).toFixed(2)}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">
                       最大: {(result.max * 100).toFixed(2)}%
